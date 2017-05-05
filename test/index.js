@@ -20,13 +20,16 @@ const argv = [
   '--D',
   'D',
   '-a',
-  'anotheroptionvalue'
+  'anotheroptionvalue',
+  '-l',
+  10
 ];
 
 test('options', t => {
   args
     .option('port', 'The port on which the site will run')
     .option('true', 'Boolean', true)
+    .option('list', 'List', [])
     .option(['d', 'data'], 'The data that shall be used')
     .option('duplicated', 'Duplicated first char in option')
     .options([{ name: 'anotheroption', description: 'another option' }]);
@@ -39,8 +42,12 @@ test('options', t => {
     }
 
     const content = config[property];
+    console.log(content);
 
     switch (content) {
+      case [10, 20]:
+        console.log('JUCHU');
+        break;
       case 'D':
         t.is(content, 'D');
         break;
@@ -58,7 +65,11 @@ test('options', t => {
         }
         break;
       default:
-        t.true(content);
+        if (content.constructor === Array) {
+          t.deepEqual(content, [10]);
+        } else {
+          t.true(content);
+        }
     }
   }
 });
